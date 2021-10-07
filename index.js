@@ -66,5 +66,6 @@ function classesMapConstAst({ importNode, classesMap }) {
 }
 
 function putStyleIntoHeadAst({ code }) {
-  return jsStringToAst(`require('load-styles')(\`${ code }\`)`);
+  const sanitizedCode = code.replace(/`/g, "").replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+  return jsStringToAst(`require('load-styles')(\`${ sanitizedCode }\`)`);
 }
