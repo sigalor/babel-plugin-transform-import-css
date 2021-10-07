@@ -1,6 +1,4 @@
 const genericNames = require('generic-names');
-// const globToRegex = require('glob-to-regexp')
-// const validate = require('./validate')
 const path = require('path');
 const fs = require('fs');
 
@@ -15,7 +13,7 @@ const getPostcssrcOptions = require('postcss-load-config/src/options');
 const PWD = process.cwd();
 
 module.exports = {
-  process (css, fromSrc, options, configPath) {
+  process(css, fromSrc, options, configPath) {
     // TODO: load options, plugins from .postcssrc / postcss.config.js
     const { plugins, ...configOptions } = loadConfig(configPath);
     const runner = postcss(getPlugins(plugins, options));
@@ -32,15 +30,19 @@ module.exports = {
 
 function getPlugins(plugins, { generateScopedName, ext } = {}) {
   const extensions = [ext || '.css'];
-  const resolveOpts = {}, prepend = [], append = plugins || [], mode = undefined, hashPrefix = undefined;
+  const resolveOpts = {},
+    prepend = [],
+    append = plugins || [],
+    mode = undefined,
+    hashPrefix = undefined;
   const scopedName = normalizeScopedName(generateScopedName, hashPrefix);
 
   return [
     ...prepend,
     // fixme: remove all of this?
     new LocalByDefault({ mode, generateScopedName: scopedName }),
-    new ExtractImports({ createImportedName: undefined }),
-    new Scope({ generateScopedName: scopedName }),
+    ExtractImports({ createImportedName: undefined }),
+    Scope({ generateScopedName: scopedName }),
     new ResolveImports({ resolve: { extensions, ...resolveOpts } }),
     ...append,
   ];
@@ -77,7 +79,7 @@ function loadRawConf(configPath) {
     return { conf, confPath: jsConfPath };
   }
 
-  const jsonConfPath = /rc$|\.json$/.test(configPath) ? configPath : path.resolve(PWD, '.postcssrc')
+  const jsonConfPath = /rc$|\.json$/.test(configPath) ? configPath : path.resolve(PWD, '.postcssrc');
   if (fs.existsSync(jsonConfPath)) {
     const conf = JSON.parse(fs.readFileSync(jsonConfPath, 'utf8'));
     return { conf, confPath: jsonConfPath };

@@ -1,53 +1,30 @@
-// node >= 8
-// babel == 7
-
 const t = require('@babel/types');
 
 const CssImport = require('./css-import-visitor');
-const {
-  jsToAst, jsStringToAst, constAst, postcss,
-} = require('./helpers');
+const { jsToAst, jsStringToAst, constAst, postcss } = require('./helpers');
 
-/* main() { */
-
-module.exports = function(/*babel*/) {
-  // is plugin initialized?
-  // const initialized = false;
-
+module.exports = function () {
   const pluginApi = {
-    manipulateOptions (options) {
-      // if (initialized) return options;
+    manipulateOptions(options) {
       return options;
-
-      // e.g. { generateScopedName }
-      // const currentConfig = { ...defaultOptions, ...retreiveOptions(options, pluginApi) };
-
-      // TODO:
-      // require('./postcss-hook')(currentConfig)
-      // const initialized = true;
     },
 
     visitor: {
       ImportDeclaration: {
         exit: CssImport(({ src, css, options, importNode, babelData }) => {
-          const postcssOptions = { generateScopedName: options.generateScopedName };
+          const postcssOptions = {
+            generateScopedName: options.generateScopedName,
+          };
           const { code, classesMap } = postcss.process(css, src, postcssOptions, options.configPath);
 
-          // const jssObject = cssToJss({ code });
-          // writeJssFile(jssObject, src);
-
-          // issues: Fails for import statement with no name #2
           if (importNode.local) {
             babelData.replaceWithMultiple([
               classesMapConstAst({ classesMap, importNode }),
               putStyleIntoHeadAst({ code }),
             ]);
           } else {
-            babelData.replaceWithMultiple([
-              putStyleIntoHeadAst({ code }),
-            ]);
+            babelData.replaceWithMultiple([putStyleIntoHeadAst({ code })]);
           }
-          
         }),
       },
     },
@@ -55,17 +32,14 @@ module.exports = function(/*babel*/) {
   return pluginApi;
 };
 
-/* } */
-
 function classesMapConstAst({ importNode, classesMap }) {
-  // XXX: class-names API extending with jssObject (css-in-js object generated on source css)
   const classesMapAst = jsToAst(classesMap);
   const classesMapVarNameAst = t.identifier(importNode.local.name);
-
   return constAst(classesMapVarNameAst, classesMapAst);
 }
 
 function putStyleIntoHeadAst({ code }) {
-  const sanitizedCode = code.replace(/`/g, "").replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
-  return jsStringToAst(`require('load-styles')(\`${ sanitizedCode }\`)`);
+  // need to sanitize backslashes and remove backticks to not break generated code
+  const sanitizedCode = code.replace(/`/g, '').replace(/\\/g, '\\\\');
+  return jsStringToAst(`require('load-styles')(\`${sanitizedCode}\`)`);
 }

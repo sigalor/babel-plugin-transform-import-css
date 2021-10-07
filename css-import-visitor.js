@@ -37,7 +37,7 @@ function errorBoundary(cssFile, cb) {
     cb();
   } catch (e) {
     debugger; // eslint-disable-line no-debugger
-    console.error(`babel-plugin-transform-import-css: ${ cssFile }`, e);
+    console.error(`babel-plugin-transform-import-css: ${cssFile}`, e);
     throw e;
   }
 }

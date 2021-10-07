@@ -21,26 +21,24 @@
   "author": "Alex Mextner <invntrm@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "load-styles": "^2.0.0",
+    "postcss": "^8.3.9",
     "postcss-icss-selectors": "^2.0.3",
-    "postcss-load-config": "^2.0.0",
-    "postcss-modules-extract-imports": "^2.0.0",
+    "postcss-load-config": "^3.1.0",
+    "postcss-modules-extract-imports": "^3.0.0",
     "postcss-modules-resolve-imports": "^1.3.0",
-    "postcss-modules-scope": "^2.1.0",
+    "postcss-modules-scope": "^3.0.0",
     "require-resolve": "0.0.2"
   },
   "peerDependencies": {
     "@babel/template": "7.x",
-    "@babel/types": "7.x",
-    "postcss": "7.x.x"
+    "@babel/types": "7.x"
   },
   "devDependencies": {
-    "@babel/template": "^7.4.4",
-    "@babel/types": "^7.4.4",
+    "@babel/template": "^7.15.4",
+    "@babel/types": "^7.15.6",
     "eslint-plugin-immutable": "^1.0.0",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-react": "^7.7.0",
-    "postcss": "^7.0.16"
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-react": "^7.26.1"
   },
   "engines": {
     "node": ">=8.x"
